@@ -364,7 +364,7 @@ function firstLine(body) {
 
 function restLines(body) {
   const lines = body.split("\n").filter(l => l.trim());
-  return lines.slice(1).join(" ") || "追加テキストなし";
+  return lines.slice(1).join(" ") || "";
 }
 
 // 一覧描画
