@@ -13,78 +13,73 @@
 ```
 :root {
   --bg: #1c1c1e;
-  --surface: #2c2c2e;
-  --surface2: #3a3a3c;
-  --border: rgba(255,255,255,0.08);
+  --card: #2c2c2e;
+  --input-bg: #3a3a3c;
+  --border: rgba(255,255,255,0.1);
   --text: #ffffff;
-  --text-sub: #ebebf5cc;
-  --text-muted: #ebebf599;
-  --text-dim: #ebebf560;
-  --accent: #ffd60a;
-  --card-bg: #2c2c2e;
+  --text-muted: rgba(235,235,245,0.6);
+  --text-dim: rgba(235,235,245,0.3);
+  --yellow: #ffd60a;
+  --red: #ff453a;
+  --safe-top: env(safe-area-inset-top, 44px);
   --safe-bottom: env(safe-area-inset-bottom, 0px);
-  --safe-top: env(safe-area-inset-top, 0px);
 }
 
 html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: -apple-system, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
+  font-family: -apple-system, 'Hiragino Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
-  overflow: hidden;
 }
 
-body {
-  display: flex;
+/* ページ管理 */
+.page {
+  position: fixed;
+  inset: 0;
+  background: var(--bg);
+  display: none;
   flex-direction: column;
-  height: 100dvh;
 }
 
-#mainView {
+.page.active {
   display: flex;
-  flex-direction: column;
-  height: 100%;
 }
 
-.nav-bar {
-  flex-shrink: 0;
-  padding-top: calc(var(--safe-top) + 12px);
-  padding-left: 20px;
-  padding-right: 20px;
-  padding-bottom: 8px;
+/* ===== 一覧画面 ===== */
+#listPage .top {
+  padding-top: calc(var(--safe-top) + 8px);
+  padding: calc(var(--safe-top) + 8px) 20px 12px;
 }
 
-.nav-title {
+#listPage .title {
   font-size: 34px;
   font-weight: 700;
   letter-spacing: -0.5px;
-  margin-bottom: 4px;
+  margin-bottom: 2px;
 }
 
-.nav-count {
+#listPage .count {
   font-size: 13px;
   color: var(--text-muted);
-  margin-bottom: 12px;
 }
 
-#memoList {
+#listPage .scroll-area {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
-  padding: 0 16px;
+  padding: 12px 16px 0;
 }
 
-#memoList::-webkit-scrollbar { display: none; }
+#listPage .scroll-area::-webkit-scrollbar { display: none; }
 
 .memo-card {
-  background: var(--card-bg);
+  background: var(--card);
   border-radius: 12px;
-  padding: 12px 16px;
+  padding: 13px 16px;
   margin-bottom: 10px;
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;
-  transition: opacity 0.1s;
 }
 
 .memo-card:active { opacity: 0.6; }
@@ -92,14 +87,13 @@ body {
 .memo-card-title {
   font-size: 15px;
   font-weight: 600;
-  color: var(--text);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   margin-bottom: 3px;
 }
 
-.memo-card-sub {
+.memo-card-row {
   display: flex;
   gap: 8px;
   align-items: baseline;
@@ -119,48 +113,44 @@ body {
   text-overflow: ellipsis;
 }
 
-.memo-card-preview .match,
-.memo-card-title .match {
-  color: var(--accent);
-}
+.match { color: var(--yellow); }
 
-.empty-state {
+.empty {
   text-align: center;
   color: var(--text-dim);
   font-size: 14px;
-  margin-top: 60px;
+  padding-top: 60px;
 }
 
-.bottom-bar {
-  flex-shrink: 0;
+#listPage .bottom {
   padding: 10px 16px;
   padding-bottom: calc(10px + var(--safe-bottom));
-  background: rgba(28,28,30,0.92);
+  border-top: 1px solid var(--border);
+  background: rgba(28,28,30,0.95);
   backdrop-filter: blur(20px);
   -webkit-backdrop-filter: blur(20px);
-  border-top: 1px solid var(--border);
 }
 
-.bottom-inner {
+.bottom-row {
   display: flex;
   align-items: center;
   gap: 10px;
 }
 
-.search-field {
+.search-box {
   flex: 1;
   display: flex;
   align-items: center;
-  background: var(--surface2);
+  background: var(--input-bg);
   border-radius: 10px;
   padding: 8px 12px;
-  gap: 8px;
+  gap: 6px;
 }
 
-.search-icon {
-  flex-shrink: 0;
+.search-box span {
   color: var(--text-dim);
-  font-size: 15px;
+  font-size: 16px;
+  flex-shrink: 0;
 }
 
 #searchInput {
@@ -171,103 +161,80 @@ body {
   color: var(--text);
   font-size: 15px;
   font-family: inherit;
-  min-width: 0;
 }
 
 #searchInput::placeholder { color: var(--text-dim); }
 
-.btn-new {
+.btn-add {
   width: 44px;
   height: 44px;
   border-radius: 50%;
-  background: var(--accent);
+  background: var(--yellow);
   border: none;
+  color: #1c1c1e;
+  font-size: 26px;
+  font-weight: 300;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  cursor: pointer;
   flex-shrink: 0;
   -webkit-tap-highlight-color: transparent;
-  transition: transform 0.1s, opacity 0.1s;
   box-shadow: 0 2px 12px rgba(255,214,10,0.4);
-  font-size: 24px;
-  color: #1c1c1e;
-  font-weight: 300;
   line-height: 1;
 }
 
-.btn-new:active { transform: scale(0.9); }
+.btn-add:active { transform: scale(0.9); }
 
-/* エディタ */
-#editorView {
-  position: fixed;
-  inset: 0;
-  background: var(--bg);
-  display: flex;
-  flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
-  z-index: 10;
-}
-
-#editorView.open { transform: translateX(0); }
-
-.editor-nav {
-  flex-shrink: 0;
+/* ===== 編集画面 ===== */
+#editPage .nav {
   display: flex;
   align-items: center;
-  padding-top: calc(var(--safe-top) + 12px);
+  padding-top: calc(var(--safe-top) + 4px);
   padding-left: 4px;
   padding-right: 16px;
-  padding-bottom: 8px;
+  padding-bottom: 4px;
+  border-bottom: 1px solid var(--border);
 }
 
 .btn-back {
-  display: flex;
-  align-items: center;
-  gap: 4px;
   background: none;
   border: none;
-  color: var(--accent);
+  color: var(--yellow);
   font-size: 17px;
   font-family: inherit;
   cursor: pointer;
-  padding: 8px 12px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  gap: 2px;
   -webkit-tap-highlight-color: transparent;
 }
 
-.btn-back-arrow {
-  font-size: 20px;
-  line-height: 1;
-  margin-top: -1px;
-}
+.btn-back:active { opacity: 0.6; }
 
-.editor-nav-right {
-  margin-left: auto;
-}
-
-.btn-delete {
-  background: none;
-  border: none;
-  color: #ff453a;
-  font-size: 15px;
-  font-family: inherit;
-  cursor: pointer;
-  padding: 8px;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.btn-delete.hidden { display: none; }
-
-.editor-meta {
-  flex-shrink: 0;
+.nav-meta {
+  flex: 1;
   text-align: center;
   font-size: 12px;
   color: var(--text-muted);
-  padding: 0 16px 10px;
 }
 
-#editorArea {
+.btn-del {
+  background: none;
+  border: none;
+  color: var(--red);
+  font-size: 15px;
+  font-family: inherit;
+  cursor: pointer;
+  padding: 10px 4px;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.btn-del:active { opacity: 0.6; }
+.btn-del.hidden { visibility: hidden; }
+
+#editArea {
   flex: 1;
   background: transparent;
   border: none;
@@ -276,28 +243,29 @@ body {
   color: var(--text);
   font-family: inherit;
   font-size: 16px;
-  line-height: 1.7;
-  padding: 4px 20px 40px;
+  line-height: 1.75;
+  padding: 16px 20px;
   -webkit-overflow-scrolling: touch;
 }
 
-#editorArea::placeholder { color: var(--text-dim); }
+#editArea::placeholder { color: var(--text-dim); }
 
+/* トースト */
 #toast {
   position: fixed;
-  bottom: calc(80px + var(--safe-bottom));
+  bottom: calc(90px + var(--safe-bottom));
   left: 50%;
-  transform: translateX(-50%) translateY(16px);
-  background: var(--surface2);
-  color: var(--text-sub);
+  transform: translateX(-50%) translateY(10px);
+  background: var(--input-bg);
+  color: var(--text-muted);
   font-size: 13px;
-  padding: 8px 16px;
+  padding: 8px 18px;
   border-radius: 20px;
   opacity: 0;
   transition: opacity 0.2s, transform 0.2s;
-  z-index: 100;
-  white-space: nowrap;
   pointer-events: none;
+  z-index: 999;
+  white-space: nowrap;
 }
 
 #toast.show {
@@ -310,36 +278,34 @@ body {
 </head>
 <body>
 
-<div id="mainView">
-  <div class="nav-bar">
-    <div class="nav-title">メモ</div>
-    <div class="nav-count" id="memoCount">読み込み中...</div>
+<!-- 一覧ページ -->
+
+<div class="page active" id="listPage">
+  <div class="top">
+    <div class="title">メモ</div>
+    <div class="count" id="countEl">読み込み中...</div>
   </div>
-
-  <div id="memoList"></div>
-
-  <div class="bottom-bar">
-    <div class="bottom-inner">
-      <div class="search-field">
-        <span class="search-icon">⌕</span>
+  <div class="scroll-area" id="listEl"></div>
+  <div class="bottom">
+    <div class="bottom-row">
+      <div class="search-box">
+        <span>⌕</span>
         <input type="search" id="searchInput" placeholder="検索">
       </div>
-      <button class="btn-new" id="btnNew">+</button>
+      <button class="btn-add" id="btnAdd">+</button>
     </div>
   </div>
 </div>
 
-<div id="editorView">
-  <div class="editor-nav">
-    <button class="btn-back" id="btnBack">
-      <span class="btn-back-arrow">‹</span>メモ
-    </button>
-    <div class="editor-nav-right">
-      <button class="btn-delete hidden" id="btnDelete">削除</button>
-    </div>
+<!-- 編集ページ -->
+
+<div class="page" id="editPage">
+  <div class="nav">
+    <button class="btn-back" id="btnBack">‹ メモ</button>
+    <div class="nav-meta" id="navMeta"></div>
+    <button class="btn-del hidden" id="btnDel">削除</button>
   </div>
-  <div class="editor-meta" id="editorMeta"></div>
-  <textarea id="editorArea" placeholder="メモを入力..."></textarea>
+  <textarea id="editArea" placeholder="メモを入力..."></textarea>
 </div>
 
 <div id="toast"></div>
@@ -354,141 +320,158 @@ const firebaseConfig = {
   projectId: "memo-ce334",
   storageBucket: "memo-ce334.firebasestorage.app",
   messagingSenderId: "732811990086",
-  appId: "1:732811990086:web:5b69ceb89f80cae7f9a647",
-  measurementId: "G-DF3Z087VMQ"
+  appId: "1:732811990086:web:5b69ceb89f80cae7f9a647"
 };
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const COLL = "memos";
 
 let memos = [];
 let currentId = null;
 let saveTimer = null;
-let searchQuery = "";
+let searchQ = "";
 
-const memoListEl = document.getElementById("memoList");
-const memoCountEl = document.getElementById("memoCount");
-const editorView = document.getElementById("editorView");
-const editorArea = document.getElementById("editorArea");
-const editorMeta = document.getElementById("editorMeta");
-const btnNew = document.getElementById("btnNew");
-const btnBack = document.getElementById("btnBack");
-const btnDelete = document.getElementById("btnDelete");
+const listPage  = document.getElementById("listPage");
+const editPage  = document.getElementById("editPage");
+const listEl    = document.getElementById("listEl");
+const countEl   = document.getElementById("countEl");
 const searchInput = document.getElementById("searchInput");
-const toastEl = document.getElementById("toast");
+const btnAdd    = document.getElementById("btnAdd");
+const btnBack   = document.getElementById("btnBack");
+const btnDel    = document.getElementById("btnDel");
+const editArea  = document.getElementById("editArea");
+const navMeta   = document.getElementById("navMeta");
+const toastEl   = document.getElementById("toast");
 
+// ページ切り替え
+function showList() {
+  editPage.classList.remove("active");
+  listPage.classList.add("active");
+}
+
+function showEdit() {
+  listPage.classList.remove("active");
+  editPage.classList.add("active");
+  setTimeout(() => editArea.focus(), 100);
+}
+
+// トースト
 let toastTimer;
-function showToast(msg) {
+function toast(msg) {
   toastEl.textContent = msg;
   toastEl.classList.add("show");
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
 }
 
-function formatDate(ts) {
+// 日付
+function fmtDate(ts) {
   if (!ts) return "";
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   const now = new Date();
-  const today = new Date(); today.setHours(0,0,0,0);
-  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
-  const diff = now - d;
-  if (diff < 60000) return "たった今";
+  const today = new Date(now); today.setHours(0,0,0,0);
+  const yest  = new Date(today); yest.setDate(today.getDate()-1);
+  if (now - d < 60000) return "たった今";
   if (d >= today) return `${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`;
-  if (d >= yesterday) return "昨日";
+  if (d >= yest)  return "昨日";
   if (d.getFullYear() === now.getFullYear()) return `${d.getMonth()+1}/${d.getDate()}`;
   return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
 }
 
-function formatDateFull(ts) {
+function fmtFull(ts) {
   if (!ts) return "";
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
 }
 
-function escHtml(s) {
+function esc(s) {
   return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
-function highlight(text, q) {
-  if (!q) return escHtml(text);
-  const esc = q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
-  return escHtml(text).replace(new RegExp(esc,"gi"), m => `<span class="match">${m}</span>`);
+function hi(text, q) {
+  if (!q) return esc(text);
+  const re = new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"), "gi");
+  return esc(text).replace(re, m => `<span class="match">${m}</span>`);
 }
 
-function getFirstLine(body) {
-  const lines = body.split("\n").filter(l => l.trim());
-  return lines[0] || "新規メモ";
+function firstLine(body) {
+  return body.split("\n").find(l => l.trim()) || "新規メモ";
 }
 
-function getPreview(body) {
+function restLines(body) {
   const lines = body.split("\n").filter(l => l.trim());
   return lines.slice(1).join(" ") || "追加テキストなし";
 }
 
+// 一覧描画
 function renderList() {
-  const q = searchQuery.trim().toLowerCase();
+  const q = searchQ.trim().toLowerCase();
   const filtered = q ? memos.filter(m => m.body.toLowerCase().includes(q)) : memos;
 
-  memoCountEl.textContent = `${memos.length}件のメモ`;
-  memoListEl.innerHTML = "";
+  countEl.textContent = `${memos.length}件のメモ`;
+  listEl.innerHTML = "";
 
-  if (filtered.length === 0) {
-    memoListEl.innerHTML = `<div class="empty-state">${q ? "見つかりません" : "メモがありません"}</div>`;
+  if (!filtered.length) {
+    listEl.innerHTML = `<div class="empty">${q ? "見つかりません" : "メモがありません"}</div>`;
     return;
   }
 
   filtered.forEach(m => {
-    const title = getFirstLine(m.body);
-    const preview = getPreview(m.body);
     const card = document.createElement("div");
     card.className = "memo-card";
     card.innerHTML = `
-      <div class="memo-card-title">${highlight(title, q)}</div>
-      <div class="memo-card-sub">
-        <span class="memo-card-date">${formatDate(m.updatedAt || m.createdAt)}</span>
-        <span class="memo-card-preview">${highlight(preview.slice(0,60), q)}</span>
+      <div class="memo-card-title">${hi(firstLine(m.body), q)}</div>
+      <div class="memo-card-row">
+        <span class="memo-card-date">${fmtDate(m.updatedAt || m.createdAt)}</span>
+        <span class="memo-card-preview">${hi(restLines(m.body).slice(0,60), q)}</span>
       </div>
     `;
-    card.addEventListener("click", () => openEditor(m.id));
-    memoListEl.appendChild(card);
+    card.addEventListener("click", () => openMemo(m.id));
+    listEl.appendChild(card);
   });
 }
 
-function openEditor(id) {
-  const memo = memos.find(m => m.id === id);
-  if (!memo) return;
+// メモを開く
+function openMemo(id) {
+  const m = memos.find(x => x.id === id);
+  if (!m) return;
   currentId = id;
-  editorArea.value = memo.body;
-  editorMeta.textContent = memo.createdAt ? formatDateFull(memo.createdAt) : "";
-  btnDelete.classList.remove("hidden");
-  editorView.classList.add("open");
-  setTimeout(() => editorArea.focus(), 300);
+  editArea.value = m.body;
+  navMeta.textContent = fmtFull(m.createdAt);
+  btnDel.classList.remove("hidden");
+  showEdit();
 }
 
-btnNew.addEventListener("click", async () => {
+// 新規作成
+btnAdd.addEventListener("click", async () => {
   try {
-    const docRef = await addDoc(collection(db, COLL), {
+    const ref = await addDoc(collection(db, "memos"), {
       body: "",
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
-    memos.unshift({ id: docRef.id, body: "", createdAt: null, updatedAt: null });
-    openEditor(docRef.id);
+    memos.unshift({ id: ref.id, body: "", createdAt: null, updatedAt: null });
+    currentId = ref.id;
+    editArea.value = "";
+    navMeta.textContent = "";
+    btnDel.classList.add("hidden");
+    showEdit();
   } catch(e) {
-    showToast("エラーが発生しました");
+    toast("エラーが発生しました");
     console.error(e);
   }
 });
 
+// 戻る
 btnBack.addEventListener("click", () => {
   flushSave();
-  editorView.classList.remove("open");
   currentId = null;
+  showList();
   renderList();
 });
 
-editorArea.addEventListener("input", () => {
+// 自動保存
+editArea.addEventListener("input", () => {
   clearTimeout(saveTimer);
   saveTimer = setTimeout(flushSave, 1000);
 });
@@ -496,48 +479,51 @@ editorArea.addEventListener("input", () => {
 async function flushSave() {
   clearTimeout(saveTimer);
   if (!currentId) return;
-  const body = editorArea.value;
-  const memo = memos.find(m => m.id === currentId);
-  if (!memo || memo.body === body) return;
-  memo.body = body;
-  memo.updatedAt = new Date();
+  const body = editArea.value;
+  const m = memos.find(x => x.id === currentId);
+  if (!m || m.body === body) return;
+  m.body = body;
+  m.updatedAt = new Date();
   try {
-    await updateDoc(doc(db, COLL, currentId), { body, updatedAt: serverTimestamp() });
-    showToast("保存しました");
+    await updateDoc(doc(db, "memos", currentId), { body, updatedAt: serverTimestamp() });
+    toast("保存しました");
   } catch(e) {
-    showToast("保存できませんでした");
+    toast("保存できませんでした");
     console.error(e);
   }
 }
 
-btnDelete.addEventListener("click", async () => {
+// 削除
+btnDel.addEventListener("click", async () => {
   if (!currentId) return;
   if (!confirm("このメモを削除しますか？")) return;
   try {
-    await deleteDoc(doc(db, COLL, currentId));
-    memos = memos.filter(m => m.id !== currentId);
+    await deleteDoc(doc(db, "memos", currentId));
+    memos = memos.filter(x => x.id !== currentId);
     currentId = null;
-    editorView.classList.remove("open");
+    showList();
     renderList();
-    showToast("削除しました");
+    toast("削除しました");
   } catch(e) {
-    showToast("削除できませんでした");
+    toast("削除できませんでした");
     console.error(e);
   }
 });
 
+// 検索
 searchInput.addEventListener("input", e => {
-  searchQuery = e.target.value;
+  searchQ = e.target.value;
   renderList();
 });
 
-const q = query(collection(db, COLL), orderBy("updatedAt", "desc"));
-onSnapshot(q, snapshot => {
-  memos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+// Firestore同期
+const q = query(collection(db, "memos"), orderBy("updatedAt", "desc"));
+onSnapshot(q, snap => {
+  memos = snap.docs.map(d => ({ id: d.id, ...d.data() }));
   renderList();
 }, err => {
   console.error(err);
-  memoListEl.innerHTML = `<div class="empty-state">接続できません</div>`;
+  listEl.innerHTML = `<div class="empty">接続できません</div>`;
 });
 </script>
 
