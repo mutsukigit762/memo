@@ -3,228 +3,269 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <title>memo</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500&family=DM+Mono:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+  <title>メモ</title>
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
 ```
 :root {
-  --bg: #0f0f0f;
-  --surface: #1a1a1a;
-  --surface2: #222222;
-  --border: #2e2e2e;
-  --text: #e8e8e0;
-  --text-muted: #666660;
-  --text-dim: #444440;
-  --accent: #c8b89a;
-  --accent-dim: #5a4f3e;
-  --danger: #8a4040;
-  --highlight: #2a2520;
+  --bg: #1c1c1e;
+  --surface: #2c2c2e;
+  --surface2: #3a3a3c;
+  --border: rgba(255,255,255,0.08);
+  --text: #ffffff;
+  --text-sub: #ebebf5cc;
+  --text-muted: #ebebf599;
+  --text-dim: #ebebf560;
+  --accent: #ffd60a;
+  --card-bg: #2c2c2e;
+  --safe-bottom: env(safe-area-inset-bottom, 0px);
+  --safe-top: env(safe-area-inset-top, 0px);
 }
 
 html, body {
   height: 100%;
   background: var(--bg);
   color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-weight: 300;
+  font-family: -apple-system, 'Hiragino Sans', 'Hiragino Kaku Gothic ProN', sans-serif;
   -webkit-font-smoothing: antialiased;
+  overflow: hidden;
 }
 
 body {
   display: flex;
   flex-direction: column;
   height: 100dvh;
-  overflow: hidden;
 }
 
-/* ── ヘッダー ── */
-header {
-  flex-shrink: 0;
-  padding: 16px 20px 12px;
-  border-bottom: 1px solid var(--border);
-  background: var(--bg);
-}
-
-.header-top {
+#mainView {
   display: flex;
-  align-items: center;
-  gap: 12px;
+  flex-direction: column;
+  height: 100%;
+}
+
+.nav-bar {
+  flex-shrink: 0;
+  padding-top: calc(var(--safe-top) + 12px);
+  padding-left: 20px;
+  padding-right: 20px;
+  padding-bottom: 8px;
+}
+
+.nav-title {
+  font-size: 34px;
+  font-weight: 700;
+  letter-spacing: -0.5px;
+  margin-bottom: 4px;
+}
+
+.nav-count {
+  font-size: 13px;
+  color: var(--text-muted);
   margin-bottom: 12px;
 }
 
-.app-title {
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  font-weight: 300;
-  color: var(--text-muted);
-  letter-spacing: 0.15em;
-  text-transform: lowercase;
-  flex: 1;
-}
-
-.btn-new {
-  background: none;
-  border: 1px solid var(--border);
-  color: var(--accent);
-  font-family: 'DM Mono', monospace;
-  font-size: 18px;
-  font-weight: 300;
-  width: 36px;
-  height: 36px;
-  border-radius: 6px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  transition: background 0.15s, border-color 0.15s;
-  -webkit-tap-highlight-color: transparent;
-}
-
-.btn-new:active { background: var(--surface2); border-color: var(--accent-dim); }
-
-.search-wrap {
-  position: relative;
-}
-
-.search-icon {
-  position: absolute;
-  left: 10px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-dim);
-  font-size: 13px;
-  pointer-events: none;
-}
-
-#searchInput {
-  width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 8px;
-  padding: 9px 12px 9px 32px;
-  color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 14px;
-  font-weight: 300;
-  outline: none;
-  transition: border-color 0.15s;
-}
-
-#searchInput::placeholder { color: var(--text-dim); }
-#searchInput:focus { border-color: var(--accent-dim); }
-
-/* ── リスト ── */
 #memoList {
   flex: 1;
   overflow-y: auto;
   -webkit-overflow-scrolling: touch;
+  padding: 0 16px;
 }
 
-#memoList:empty::after {
-  content: 'メモがない';
-  display: block;
-  text-align: center;
-  color: var(--text-dim);
-  font-family: 'DM Mono', monospace;
-  font-size: 12px;
-  margin-top: 60px;
-  letter-spacing: 0.1em;
-}
+#memoList::-webkit-scrollbar { display: none; }
 
-.memo-item {
-  padding: 14px 20px;
-  border-bottom: 1px solid var(--border);
+.memo-card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 12px 16px;
+  margin-bottom: 10px;
   cursor: pointer;
-  transition: background 0.1s;
   -webkit-tap-highlight-color: transparent;
+  transition: opacity 0.1s;
 }
 
-.memo-item:active { background: var(--surface); }
-.memo-item.selected { background: var(--highlight); }
+.memo-card:active { opacity: 0.6; }
 
-.memo-preview {
-  font-size: 14px;
+.memo-card-title {
+  font-size: 15px;
+  font-weight: 600;
   color: var(--text);
-  line-height: 1.5;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
-.memo-preview .match { color: var(--accent); background: var(--accent-dim); border-radius: 2px; padding: 0 2px; }
+.memo-card-sub {
+  display: flex;
+  gap: 8px;
+  align-items: baseline;
+}
 
-.memo-date {
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
+.memo-card-date {
+  font-size: 13px;
+  color: var(--text-muted);
+  flex-shrink: 0;
+}
+
+.memo-card-preview {
+  font-size: 13px;
   color: var(--text-dim);
-  font-weight: 300;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
-/* ── エディタパネル ── */
-#editorPanel {
+.memo-card-preview .match,
+.memo-card-title .match {
+  color: var(--accent);
+}
+
+.empty-state {
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-top: 60px;
+}
+
+.bottom-bar {
+  flex-shrink: 0;
+  padding: 10px 16px;
+  padding-bottom: calc(10px + var(--safe-bottom));
+  background: rgba(28,28,30,0.92);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--border);
+}
+
+.bottom-inner {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.search-field {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  background: var(--surface2);
+  border-radius: 10px;
+  padding: 8px 12px;
+  gap: 8px;
+}
+
+.search-icon {
+  flex-shrink: 0;
+  color: var(--text-dim);
+  font-size: 15px;
+}
+
+#searchInput {
+  flex: 1;
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text);
+  font-size: 15px;
+  font-family: inherit;
+  min-width: 0;
+}
+
+#searchInput::placeholder { color: var(--text-dim); }
+
+.btn-new {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--accent);
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.1s, opacity 0.1s;
+  box-shadow: 0 2px 12px rgba(255,214,10,0.4);
+  font-size: 24px;
+  color: #1c1c1e;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.btn-new:active { transform: scale(0.9); }
+
+/* エディタ */
+#editorView {
   position: fixed;
   inset: 0;
   background: var(--bg);
   display: flex;
   flex-direction: column;
   transform: translateX(100%);
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform 0.28s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 10;
 }
 
-#editorPanel.open { transform: translateX(0); }
+#editorView.open { transform: translateX(0); }
 
-.editor-header {
+.editor-nav {
   flex-shrink: 0;
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 16px 20px;
-  border-bottom: 1px solid var(--border);
+  padding-top: calc(var(--safe-top) + 12px);
+  padding-left: 4px;
+  padding-right: 16px;
+  padding-bottom: 8px;
 }
 
 .btn-back {
+  display: flex;
+  align-items: center;
+  gap: 4px;
   background: none;
   border: none;
   color: var(--accent);
-  font-family: 'DM Mono', monospace;
-  font-size: 13px;
-  font-weight: 300;
+  font-size: 17px;
+  font-family: inherit;
   cursor: pointer;
-  padding: 4px 0;
-  letter-spacing: 0.05em;
+  padding: 8px 12px;
   -webkit-tap-highlight-color: transparent;
 }
 
-.editor-meta {
-  flex: 1;
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  color: var(--text-dim);
-  text-align: right;
+.btn-back-arrow {
+  font-size: 20px;
+  line-height: 1;
+  margin-top: -1px;
+}
+
+.editor-nav-right {
+  margin-left: auto;
 }
 
 .btn-delete {
   background: none;
   border: none;
-  color: var(--danger);
-  font-size: 16px;
+  color: #ff453a;
+  font-size: 15px;
+  font-family: inherit;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 8px;
   -webkit-tap-highlight-color: transparent;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.15s;
 }
 
-.btn-delete.visible { opacity: 1; pointer-events: all; }
+.btn-delete.hidden { display: none; }
+
+.editor-meta {
+  flex-shrink: 0;
+  text-align: center;
+  font-size: 12px;
+  color: var(--text-muted);
+  padding: 0 16px 10px;
+}
 
 #editorArea {
   flex: 1;
@@ -233,89 +274,79 @@ header {
   outline: none;
   resize: none;
   color: var(--text);
-  font-family: 'Noto Sans JP', sans-serif;
-  font-size: 15px;
-  font-weight: 300;
-  line-height: 1.8;
-  padding: 20px;
+  font-family: inherit;
+  font-size: 16px;
+  line-height: 1.7;
+  padding: 4px 20px 40px;
   -webkit-overflow-scrolling: touch;
 }
 
 #editorArea::placeholder { color: var(--text-dim); }
 
-/* ── ステータス ── */
-#status {
+#toast {
   position: fixed;
-  bottom: 20px;
+  bottom: calc(80px + var(--safe-bottom));
   left: 50%;
-  transform: translateX(-50%) translateY(60px);
+  transform: translateX(-50%) translateY(16px);
   background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text-muted);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  padding: 6px 14px;
+  color: var(--text-sub);
+  font-size: 13px;
+  padding: 8px 16px;
   border-radius: 20px;
-  letter-spacing: 0.08em;
-  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.3s;
   opacity: 0;
+  transition: opacity 0.2s, transform 0.2s;
   z-index: 100;
   white-space: nowrap;
+  pointer-events: none;
 }
 
-#status.show { transform: translateX(-50%) translateY(0); opacity: 1; }
-
-/* ── ローディング ── */
-#loading {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 40px;
-  color: var(--text-dim);
-  font-family: 'DM Mono', monospace;
-  font-size: 11px;
-  letter-spacing: 0.1em;
+#toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
 }
-
-/* scrollbar */
-::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
 ```
 
   </style>
 </head>
 <body>
 
-<header>
-  <div class="header-top">
-    <span class="app-title">memo</span>
-    <button class="btn-new" id="btnNew" title="新規メモ">+</button>
+<div id="mainView">
+  <div class="nav-bar">
+    <div class="nav-title">メモ</div>
+    <div class="nav-count" id="memoCount">読み込み中...</div>
   </div>
-  <div class="search-wrap">
-    <span class="search-icon">⌕</span>
-    <input type="search" id="searchInput" placeholder="検索...">
-  </div>
-</header>
 
-<div id="memoList">
-  <div id="loading">読み込み中...</div>
+  <div id="memoList"></div>
+
+  <div class="bottom-bar">
+    <div class="bottom-inner">
+      <div class="search-field">
+        <span class="search-icon">⌕</span>
+        <input type="search" id="searchInput" placeholder="検索">
+      </div>
+      <button class="btn-new" id="btnNew">+</button>
+    </div>
+  </div>
 </div>
 
-<div id="editorPanel">
-  <div class="editor-header">
-    <button class="btn-back" id="btnBack">← 戻る</button>
-    <span class="editor-meta" id="editorMeta"></span>
-    <button class="btn-delete" id="btnDelete">🗑</button>
+<div id="editorView">
+  <div class="editor-nav">
+    <button class="btn-back" id="btnBack">
+      <span class="btn-back-arrow">‹</span>メモ
+    </button>
+    <div class="editor-nav-right">
+      <button class="btn-delete hidden" id="btnDelete">削除</button>
+    </div>
   </div>
-  <textarea id="editorArea" placeholder="メモを書く..."></textarea>
+  <div class="editor-meta" id="editorMeta"></div>
+  <textarea id="editorArea" placeholder="メモを入力..."></textarea>
 </div>
 
-<div id="status"></div>
+<div id="toast"></div>
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
-import { getFirestore, collection, addDoc, getDocs, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
+import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
 
 const firebaseConfig = {
   apiKey: "AIzaSyCy2qi8vFTqlqjc0VBd8GEbuh6FO0fhs9w",
@@ -331,103 +362,110 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const COLL = "memos";
 
-// ── 状態 ──
 let memos = [];
 let currentId = null;
 let saveTimer = null;
 let searchQuery = "";
 
-// ── DOM ──
-const memoList = document.getElementById("memoList");
-const editorPanel = document.getElementById("editorPanel");
+const memoListEl = document.getElementById("memoList");
+const memoCountEl = document.getElementById("memoCount");
+const editorView = document.getElementById("editorView");
 const editorArea = document.getElementById("editorArea");
 const editorMeta = document.getElementById("editorMeta");
 const btnNew = document.getElementById("btnNew");
 const btnBack = document.getElementById("btnBack");
 const btnDelete = document.getElementById("btnDelete");
 const searchInput = document.getElementById("searchInput");
-const statusEl = document.getElementById("status");
+const toastEl = document.getElementById("toast");
 
-// ── ステータス表示 ──
-let statusTimer;
-function showStatus(msg) {
-  statusEl.textContent = msg;
-  statusEl.classList.add("show");
-  clearTimeout(statusTimer);
-  statusTimer = setTimeout(() => statusEl.classList.remove("show"), 1800);
+let toastTimer;
+function showToast(msg) {
+  toastEl.textContent = msg;
+  toastEl.classList.add("show");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
 }
 
-// ── 日付フォーマット ──
 function formatDate(ts) {
   if (!ts) return "";
   const d = ts.toDate ? ts.toDate() : new Date(ts);
   const now = new Date();
+  const today = new Date(); today.setHours(0,0,0,0);
+  const yesterday = new Date(today); yesterday.setDate(today.getDate()-1);
   const diff = now - d;
   if (diff < 60000) return "たった今";
-  if (diff < 3600000) return `${Math.floor(diff/60000)}分前`;
-  if (diff < 86400000) return `${Math.floor(diff/3600000)}時間前`;
-  const y = d.getFullYear(), m = d.getMonth()+1, day = d.getDate();
-  if (y === now.getFullYear()) return `${m}/${day}`;
-  return `${y}/${m}/${day}`;
+  if (d >= today) return `${d.getHours()}:${String(d.getMinutes()).padStart(2,"0")}`;
+  if (d >= yesterday) return "昨日";
+  if (d.getFullYear() === now.getFullYear()) return `${d.getMonth()+1}/${d.getDate()}`;
+  return `${d.getFullYear()}/${d.getMonth()+1}/${d.getDate()}`;
 }
 
 function formatDateFull(ts) {
   if (!ts) return "";
   const d = ts.toDate ? ts.toDate() : new Date(ts);
-  return `${d.getFullYear()}/${String(d.getMonth()+1).padStart(2,"0")}/${String(d.getDate()).padStart(2,"0")}`;
+  return `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日`;
 }
 
-// ── ハイライト ──
-function highlight(text, q) {
-  if (!q) return escHtml(text);
-  const esc = q.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-  return escHtml(text).replace(new RegExp(esc, "gi"), m => `<span class="match">${m}</span>`);
-}
 function escHtml(s) {
   return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
 }
 
-// ── リスト描画 ──
+function highlight(text, q) {
+  if (!q) return escHtml(text);
+  const esc = q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&");
+  return escHtml(text).replace(new RegExp(esc,"gi"), m => `<span class="match">${m}</span>`);
+}
+
+function getFirstLine(body) {
+  const lines = body.split("\n").filter(l => l.trim());
+  return lines[0] || "新規メモ";
+}
+
+function getPreview(body) {
+  const lines = body.split("\n").filter(l => l.trim());
+  return lines.slice(1).join(" ") || "追加テキストなし";
+}
+
 function renderList() {
   const q = searchQuery.trim().toLowerCase();
-  const filtered = q
-    ? memos.filter(m => m.body.toLowerCase().includes(q))
-    : memos;
+  const filtered = q ? memos.filter(m => m.body.toLowerCase().includes(q)) : memos;
 
-  memoList.innerHTML = "";
+  memoCountEl.textContent = `${memos.length}件のメモ`;
+  memoListEl.innerHTML = "";
 
-  if (filtered.length === 0 && memos.length > 0) {
-    memoList.innerHTML = `<div style="text-align:center;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;margin-top:60px;letter-spacing:.1em">見つからない</div>`;
+  if (filtered.length === 0) {
+    memoListEl.innerHTML = `<div class="empty-state">${q ? "見つかりません" : "メモがありません"}</div>`;
     return;
   }
 
   filtered.forEach(m => {
-    const preview = m.body.replace(/\n/g, " ").trim() || "（空のメモ）";
-    const item = document.createElement("div");
-    item.className = "memo-item" + (m.id === currentId ? " selected" : "");
-    item.innerHTML = `
-      <div class="memo-preview">${highlight(preview.slice(0, 80), q)}</div>
-      <div class="memo-date">${formatDate(m.createdAt)}</div>
+    const title = getFirstLine(m.body);
+    const preview = getPreview(m.body);
+    const card = document.createElement("div");
+    card.className = "memo-card";
+    card.innerHTML = `
+      <div class="memo-card-title">${highlight(title, q)}</div>
+      <div class="memo-card-sub">
+        <span class="memo-card-date">${formatDate(m.updatedAt || m.createdAt)}</span>
+        <span class="memo-card-preview">${highlight(preview.slice(0,60), q)}</span>
+      </div>
     `;
-    item.addEventListener("click", () => openEditor(m.id));
-    memoList.appendChild(item);
+    card.addEventListener("click", () => openEditor(m.id));
+    memoListEl.appendChild(card);
   });
 }
 
-// ── エディタを開く ──
 function openEditor(id) {
   const memo = memos.find(m => m.id === id);
   if (!memo) return;
   currentId = id;
   editorArea.value = memo.body;
-  editorMeta.textContent = memo.createdAt ? `作成 ${formatDateFull(memo.createdAt)}` : "";
-  btnDelete.classList.add("visible");
-  editorPanel.classList.add("open");
-  renderList();
+  editorMeta.textContent = memo.createdAt ? formatDateFull(memo.createdAt) : "";
+  btnDelete.classList.remove("hidden");
+  editorView.classList.add("open");
   setTimeout(() => editorArea.focus(), 300);
 }
 
-// ── 新規メモ ──
 btnNew.addEventListener("click", async () => {
   try {
     const docRef = await addDoc(collection(db, COLL), {
@@ -435,27 +473,24 @@ btnNew.addEventListener("click", async () => {
       createdAt: serverTimestamp(),
       updatedAt: serverTimestamp()
     });
-    // ローカルに即追加
     memos.unshift({ id: docRef.id, body: "", createdAt: null, updatedAt: null });
     openEditor(docRef.id);
-  } catch (e) {
-    showStatus("エラー");
+  } catch(e) {
+    showToast("エラーが発生しました");
     console.error(e);
   }
 });
 
-// ── 戻る ──
 btnBack.addEventListener("click", () => {
   flushSave();
-  editorPanel.classList.remove("open");
+  editorView.classList.remove("open");
   currentId = null;
   renderList();
 });
 
-// ── 自動保存 ──
 editorArea.addEventListener("input", () => {
   clearTimeout(saveTimer);
-  saveTimer = setTimeout(flushSave, 1200);
+  saveTimer = setTimeout(flushSave, 1000);
 });
 
 async function flushSave() {
@@ -467,58 +502,42 @@ async function flushSave() {
   memo.body = body;
   memo.updatedAt = new Date();
   try {
-    await updateDoc(doc(db, COLL, currentId), {
-      body,
-      updatedAt: serverTimestamp()
-    });
-    showStatus("保存した");
-  } catch (e) {
-    showStatus("保存エラー");
+    await updateDoc(doc(db, COLL, currentId), { body, updatedAt: serverTimestamp() });
+    showToast("保存しました");
+  } catch(e) {
+    showToast("保存できませんでした");
     console.error(e);
   }
 }
 
-// ── 削除 ──
 btnDelete.addEventListener("click", async () => {
   if (!currentId) return;
-  if (!confirm("このメモを削除する？")) return;
+  if (!confirm("このメモを削除しますか？")) return;
   try {
     await deleteDoc(doc(db, COLL, currentId));
     memos = memos.filter(m => m.id !== currentId);
     currentId = null;
-    editorPanel.classList.remove("open");
+    editorView.classList.remove("open");
     renderList();
-    showStatus("削除した");
-  } catch (e) {
-    showStatus("削除エラー");
+    showToast("削除しました");
+  } catch(e) {
+    showToast("削除できませんでした");
     console.error(e);
   }
 });
 
-// ── 検索 ──
 searchInput.addEventListener("input", e => {
   searchQuery = e.target.value;
   renderList();
 });
 
-// ── Firestore リアルタイム同期 ──
 const q = query(collection(db, COLL), orderBy("updatedAt", "desc"));
 onSnapshot(q, snapshot => {
   memos = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
   renderList();
 }, err => {
   console.error(err);
-  memoList.innerHTML = `<div style="text-align:center;color:var(--text-dim);font-family:'DM Mono',monospace;font-size:12px;margin-top:60px;">接続エラー</div>`;
-});
-
-// ── 戻るキー（Android対応） ──
-window.addEventListener("popstate", () => {
-  if (editorPanel.classList.contains("open")) {
-    flushSave();
-    editorPanel.classList.remove("open");
-    currentId = null;
-    renderList();
-  }
+  memoListEl.innerHTML = `<div class="empty-state">接続できません</div>`;
 });
 </script>
 
