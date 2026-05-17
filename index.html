@@ -249,29 +249,6 @@ html, body {
 }
 
 #editArea::placeholder { color: var(--text-dim); }
-
-/* トースト */
-#toast {
-  position: fixed;
-  bottom: calc(90px + var(--safe-bottom));
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: var(--input-bg);
-  color: var(--text-muted);
-  font-size: 13px;
-  padding: 8px 18px;
-  border-radius: 20px;
-  opacity: 0;
-  transition: opacity 0.2s, transform 0.2s;
-  pointer-events: none;
-  z-index: 999;
-  white-space: nowrap;
-}
-
-#toast.show {
-  opacity: 1;
-  transform: translateX(-50%) translateY(0);
-}
 ```
 
   </style>
@@ -308,8 +285,6 @@ html, body {
   <textarea id="editArea" placeholder="メモを入力..."></textarea>
 </div>
 
-<div id="toast"></div>
-
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-app.js";
 import { getFirestore, collection, addDoc, updateDoc, deleteDoc, doc, serverTimestamp, query, orderBy, onSnapshot } from "https://www.gstatic.com/firebasejs/12.13.0/firebase-firestore.js";
@@ -341,8 +316,6 @@ const btnBack   = document.getElementById("btnBack");
 const btnDel    = document.getElementById("btnDel");
 const editArea  = document.getElementById("editArea");
 const navMeta   = document.getElementById("navMeta");
-const toastEl   = document.getElementById("toast");
-
 // ページ切り替え
 function showList() {
   editPage.classList.remove("active");
@@ -353,15 +326,6 @@ function showEdit() {
   listPage.classList.remove("active");
   editPage.classList.add("active");
   setTimeout(() => editArea.focus(), 100);
-}
-
-// トースト
-let toastTimer;
-function toast(msg) {
-  toastEl.textContent = msg;
-  toastEl.classList.add("show");
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(() => toastEl.classList.remove("show"), 1600);
 }
 
 // 日付
@@ -457,7 +421,6 @@ btnAdd.addEventListener("click", async () => {
     btnDel.classList.add("hidden");
     showEdit();
   } catch(e) {
-    toast("エラーが発生しました");
     console.error(e);
   }
 });
@@ -486,9 +449,7 @@ async function flushSave() {
   m.updatedAt = new Date();
   try {
     await updateDoc(doc(db, "memos", currentId), { body, updatedAt: serverTimestamp() });
-    toast("保存しました");
   } catch(e) {
-    toast("保存できませんでした");
     console.error(e);
   }
 }
@@ -503,9 +464,7 @@ btnDel.addEventListener("click", async () => {
     currentId = null;
     showList();
     renderList();
-    toast("削除しました");
   } catch(e) {
-    toast("削除できませんでした");
     console.error(e);
   }
 });
